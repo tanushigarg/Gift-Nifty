@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 
-# Install Google Chrome (without sudo)
-wget -q -O google-chrome.deb "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
-apt update && apt install -y ./google-chrome.deb
+# Create a writable directory in /tmp
+mkdir -p /tmp/chrome
 
-# Install ChromeDriver (matching Chrome version)
-CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d '.' -f 1)
-wget -q "https://chromedriver.storage.googleapis.com/${CHROME_VERSION}.0.0/chromedriver_linux64.zip"
-unzip chromedriver_linux64.zip
-mv chromedriver /usr/local/bin/chromedriver
-chmod +x /usr/local/bin/chromedriver
+# Download Chrome (Portable)
+wget -q -O /tmp/chrome/chrome.zip "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
+unzip -o /tmp/chrome/chrome.zip -d /tmp/chrome/
+chmod +x /tmp/chrome/google-chrome-stable
+
+# Download Chromedriver (Portable)
+wget -q -O /tmp/chrome/chromedriver.zip "https://chromedriver.storage.googleapis.com/$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE)/chromedriver_linux64.zip"
+unzip -o /tmp/chrome/chromedriver.zip -d /tmp/chrome/
+chmod +x /tmp/chrome/chromedriver
+
+echo "Chrome and Chromedriver installed successfully in /tmp/chrome"
