@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.service import Service
+import os
 import logging
 
 # Configure logging
@@ -14,26 +14,29 @@ app = Flask(__name__)
 
 URL = "https://www.moneycontrol.com/markets/global-indices/"
 
-# Set up Selenium WebDriver options
-chrome_options = Options()
-chrome_options.add_argument("--headless")  # Run in headless mode
-chrome_options.add_argument("--disable-gpu")
-chrome_options.add_argument("--no-sandbox")
-chrome_options.add_argument("--disable-blink-features=AutomationControlled")  # Prevent detection
-chrome_options.add_argument(
-    "user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.5481.177 Safari/537.36"
-)
+def get_driver():
+    """Sets up and returns a headless Chrome WebDriver instance"""
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")  # Fix for Render's container
+    chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+    chrome_options.add_argument(
+        "user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.5481.177 Safari/537.36"
+    )
 
-# Define the correct ChromeDriver path (for Mac)
-service = Service("/opt/homebrew/bin/chromedriver")
+    # Use downloaded chromedriver
+    driver_path = "/usr/bin/chromedriver"  # Default path in Render
+    return webdriver.Chrome(executable_path=driver_path, options=chrome_options)
 
 def fetch_market_data():
     """Fetches the GIFT NIFTY market data from the website."""
-    driver = webdriver.Chrome(service=service, options=chrome_options)
+    driver = get_driver()
     try:
         driver.get(URL)
         wait = WebDriverWait(driver, 10)
-        
+
         row_xpath = "//tr[td//a[@title='GIFT NIFTY']]"
         row_element = wait.until(EC.presence_of_element_located((By.XPATH, row_xpath)))
 
@@ -59,4 +62,4 @@ def get_gift_nifty():
     return jsonify(fetch_market_data())
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=10000, debug=True)
