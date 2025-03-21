@@ -5,6 +5,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.service import Service
 
 app = Flask(__name__)
 
@@ -21,7 +22,9 @@ def get_driver():
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 
     driver_path = "/tmp/chrome/chromedriver"
-    return webdriver.Chrome(executable_path=driver_path, options=chrome_options)
+    service = Service(driver_path) 
+    return webdriver.Chrome(service=service, options=chrome_options)
+
 
 def fetch_market_data():
     """Fetches the GIFT NIFTY market data from the website."""
