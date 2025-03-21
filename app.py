@@ -11,16 +11,16 @@ app = Flask(__name__)
 URL = "https://www.moneycontrol.com/markets/global-indices/"
 
 def get_driver():
-    """Sets up and returns a headless Chrome WebDriver instance."""
+    """Sets up and returns a headless Chrome WebDriver instance from /tmp/."""
     chrome_options = Options()
-    chrome_options.binary_location = os.getenv("CHROME_BIN", "/usr/bin/google-chrome-stable")
+    chrome_options.binary_location = "/tmp/chrome/google-chrome-stable"
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")  # Prevents crashes in Render
+    chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 
-    driver_path = os.getenv("CHROMEDRIVER_PATH", "/usr/local/bin/chromedriver")
+    driver_path = "/tmp/chrome/chromedriver"
     return webdriver.Chrome(executable_path=driver_path, options=chrome_options)
 
 def fetch_market_data():
