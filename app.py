@@ -52,6 +52,7 @@ def fetch_market_data():
     finally:
         driver.quit()
 
+@app.route("/", methods=["GET"])
 @app.route("/getGiftNifty", methods=["GET"])
 def get_gift_nifty():
     """API endpoint to return the GIFT NIFTY market value."""
