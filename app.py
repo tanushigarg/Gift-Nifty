@@ -21,8 +21,10 @@ def get_driver():
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 
-    service = Service("/usr/local/bin/chromedriver")  # ✅ Correct ChromeDriver path
+    # Specify ChromeDriver path explicitly
+    service = Service("/usr/bin/chromedriver")  
     return webdriver.Chrome(service=service, options=chrome_options)
+
 
 def fetch_market_data():
     """Fetches the GIFT NIFTY market data from the website."""
